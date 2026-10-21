@@ -2,6 +2,7 @@ import './styles.css';
 import { events, START_EVENT_ID } from './data/events';
 import { chooseOption, getAvailableChoices, getCurrentEvent, startGame, type GameState } from './engine/game';
 import { validateEvents } from './engine/validate-events';
+import { focusElementById, getProgressMetrics } from './ui/accessibility';
 
 const app = document.querySelector<HTMLDivElement>('#app');
 if (!app) throw new Error('App root element #app was not found.');
@@ -23,7 +24,7 @@ function escapeHtml(value: string): string {
     .replaceAll("'", '&#039;');
 }
 
-function renderHome(): void {
+function renderHome(focusStart = false): void {
   state = null;
   app!.innerHTML = `
     <main class="page-shell home-shell">
@@ -47,6 +48,7 @@ function renderHome(): void {
     state = startGame(START_EVENT_ID);
     renderGame();
   });
+  if (focusStart) focusElementById('start-game');
 }
 
 function renderGame(): void {
@@ -56,7 +58,7 @@ function renderGame(): void {
 
   const choices = getAvailableChoices(event, state);
   const decisionCount = state.decisions.length;
-  const progressWidth = Math.min(94, Math.max(8, decisionCount * 11 + 8));
+  const progress = getProgressMetrics(decisionCount);
   const previousFeedback = state.lastFeedback
     ? `<aside class="feedback-card"><span class="feedback-label">上一选择的后果</span><p>${escapeHtml(state.lastFeedback)}</p></aside>`
     : '';
@@ -64,11 +66,11 @@ function renderGame(): void {
   app!.innerHTML = `
     <main class="page-shell game-shell">
       <header class="game-topbar"><button class="text-button" id="quit-game" aria-label="退出本局">← <span>暂离工位</span></button><span class="brand-mark">大厂生存指南</span><span class="run-count">第 ${decisionCount + 1} 次选择</span></header>
-      <div class="progress-track" aria-label="本局进度"><span style="width:${progressWidth}%"></span></div>
+      <div class="progress-track" role="progressbar" aria-label="当前剧情进度" aria-valuemin="0" aria-valuemax="${progress.maxSteps}" aria-valuenow="${progress.currentStep}" aria-valuetext="第 ${progress.currentStep} / ${progress.maxSteps} 个场景"><span aria-hidden="true" style="width:${progress.percent}%"></span></div>
       ${previousFeedback}
       <section class="scenario-card">
         <div class="scenario-meta"><span class="chapter-pill">${escapeHtml(event.chapter)}</span><span class="case-id">CASE ${String(decisionCount + 1).padStart(2, '0')}</span></div>
-        <h1>${escapeHtml(event.title)}</h1>
+        <h1 id="scenario-title" tabindex="-1">${escapeHtml(event.title)}</h1>
         <p class="scenario-body">${escapeHtml(event.body)}</p>
       </section>
       <section class="choice-section" aria-labelledby="choice-heading">
@@ -86,7 +88,7 @@ function renderGame(): void {
     </main>`;
 
   document.querySelector<HTMLButtonElement>('#quit-game')?.addEventListener('click', () => {
-    if (window.confirm('确定要暂离工位并结束本局吗？本局选择不会保存。')) renderHome();
+    if (window.confirm('确定要暂离工位并结束本局吗？本局选择不会保存。')) renderHome(true);
   });
   document.querySelectorAll<HTMLButtonElement>('[data-choice-id]').forEach((button) => {
     button.addEventListener('click', () => {
@@ -98,6 +100,7 @@ function renderGame(): void {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
   });
+  focusElementById('scenario-title');
 }
 
 function renderEnding(event: ReturnType<typeof getCurrentEvent>): void {
@@ -116,7 +119,7 @@ function renderEnding(event: ReturnType<typeof getCurrentEvent>): void {
       <section class="ending-card ${ending.outcome === 'won' ? 'ending-won' : 'ending-lost'}">
         <div class="ending-symbol" aria-hidden="true">${icon}</div>
         <p class="ending-eyebrow">${escapeHtml(event.chapter)}</p>
-        <h1>${escapeHtml(ending.title)}</h1>
+        <h1 id="ending-title" tabindex="-1">${escapeHtml(ending.title)}</h1>
         <p class="ending-lead">${escapeHtml(ending.body)}</p>
         <div class="ending-divider"></div>
         <h2>组织给你的最终反馈</h2>
@@ -132,6 +135,7 @@ function renderEnding(event: ReturnType<typeof getCurrentEvent>): void {
     renderGame();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   });
+  focusElementById('ending-title');
 }
 
 renderHome();
