@@ -1,12 +1,20 @@
 name: Bug report
-description: 报告游戏或开发流程中的问题
+description: 报告游戏、剧情数据或开发流程中的问题
 title: "[Bug]: "
 labels:
   - bug
 body:
   - type: markdown
     attributes:
-      value: "提交前请检查问题是否已存在。涉及剧情时请提供事件 ID。"
+      value: "请先搜索现有 Issues。剧情问题尽量提供事件 ID。"
+  - type: input
+    id: target_path
+    attributes:
+      label: 对应的仓库文档/代码路径
+      description: 必须填写真实存在的路径。
+      placeholder: "src/engine/game.ts 或 docs/game-design.md"
+    validations:
+      required: true
   - type: input
     id: event_id
     attributes:
@@ -15,8 +23,8 @@ body:
   - type: textarea
     id: summary
     attributes:
-      label: 问题描述
-      description: 清楚描述实际发生了什么。
+      label: 实际问题
+      description: 清楚描述发生了什么。
     validations:
       required: true
   - type: textarea
