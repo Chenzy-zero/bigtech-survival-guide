@@ -23,7 +23,6 @@ export interface GameEvent {
   chapter: string;
   title: string;
   body: string;
-  clue?: string;
   choices?: GameChoice[];
   ending?: GameEnding;
 }

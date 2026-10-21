@@ -62,7 +62,6 @@
 - id、chapter、title、body。
 - choices：选项 id、显示文本、feedback、nextEventId 或 endingId。
 - setFlags：选择后设置的剧情标记。
-- clueTags：可用于记录反转线索或人物动机。
 - sourceIds：引用 docs/research/sources.md 中的研究条目。
 
 结局应有 outcome 与 explanation。失败说明要揭示触发陷阱的组织逻辑，而不是简单说玩家“做错了”。
@@ -76,7 +75,7 @@
 - 从开局事件可到达应当可玩的事件与结局。
 - 不存在无入口的孤立结局。
 - 重新开始会清空 decisions 与 flags。
-- 关键反转事件有可识别的线索或前置剧情，不是纯随机作者杀。
+- 关键反转应由具体场景和人物反应体现，不用独立线索卡提示玩家。
 
 ## 6. 手机端要求
 

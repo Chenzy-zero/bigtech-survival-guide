@@ -1,25 +1,14 @@
 import { describe, expect, it } from 'vitest';
 import { events, START_EVENT_ID } from '../src/data/events';
-import { chooseOption, getAvailableChoices, getCurrentEvent, startGame } from '../src/engine/game';
+import { chooseOption, getCurrentEvent, startGame } from '../src/engine/game';
 import { validateEvents } from '../src/engine/validate-events';
 
 function pick(state: ReturnType<typeof startGame>, choiceId: string) {
   return chooseOption(events, state, choiceId);
 }
 
-function playToSurvivalEnding() {
-  let state = startGame(START_EVENT_ID);
-  state = pick(state, 'resume-truth');
-  state = pick(state, 'interview-ask');
-  state = pick(state, 'offer-verify');
-  state = pick(state, 'name-ask');
-  state = pick(state, 'team-boundary');
-  state = pick(state, 'probation-clarify');
-  state = pick(state, 'urgent-fix');
-  expect(getAvailableChoices(getCurrentEvent(events, state), state).map((choice) => choice.id)).toContain('outage-evidence');
-  state = pick(state, 'outage-evidence');
-  state = pick(state, 'retro-evidence');
-  return state;
+function play(choiceIds: string[]) {
+  return choiceIds.reduce((state, choiceId) => pick(state, choiceId), startGame(START_EVENT_ID));
 }
 
 describe('event data validation', () => {
@@ -41,57 +30,57 @@ describe('event data validation', () => {
     expect(errors.some((error) => error.includes('Duplicate event id: start'))).toBe(true);
     expect(errors.some((error) => error.includes('points to missing event missing'))).toBe(true);
   });
+
+  it('keeps scene prompts short, concrete, and free of separate clue cards', () => {
+    const scenes = events.filter((event) => !event.ending);
+    expect(scenes.length).toBeGreaterThanOrEqual(10);
+    expect(scenes.every((event) => event.body.length <= 100)).toBe(true);
+    expect(scenes.every((event) => !('clue' in event))).toBe(true);
+    expect(events.some((event) => [event.title, event.body, ...(event.choices ?? []).map((choice) => choice.text)].some((text) => text.includes('主人翁精神'))).toBe(false);
+  });
 });
 
-describe('game flow', () => {
-  it('starts at the resume event with a clean run', () => {
-    const state = startGame(START_EVENT_ID);
-    expect(state.currentEventId).toBe('resume-001');
-    expect(state.decisions).toHaveLength(0);
-    expect(state.flags).toHaveLength(0);
-    expect(state.status).toBe('playing');
+describe('instant failure by stage', () => {
+  const failPaths: Array<{ name: string; choices: string[]; endingId: string }> = [
+    { name: '简历夸大项目', choices: ['resume-bluff'], endingId: 'ending-resume-bluff' },
+    { name: '面试夸大贡献', choices: ['resume-specific', 'interview-claim'], endingId: 'ending-interview-claim' },
+    { name: '编造项目数据', choices: ['resume-specific', 'interview-specific', 'followup-fake-metric'], endingId: 'ending-metric-fake' },
+    { name: '薪资不问清楚', choices: ['resume-specific', 'interview-specific', 'followup-know-metric', 'salary-anything'], endingId: 'ending-salary-low' },
+    { name: '口头 Offer 后先辞职', choices: ['resume-specific', 'interview-specific', 'followup-know-metric', 'salary-range', 'offer-resign'], endingId: 'ending-offer-cancelled' },
+    { name: '书面 Offer 不看条款', choices: ['resume-specific', 'interview-specific', 'followup-know-metric', 'salary-range', 'offer-wait', 'written-sign'], endingId: 'ending-offer-terms' },
+    { name: '入职时冲撞文化仪式', choices: ['resume-specific', 'interview-specific', 'followup-know-metric', 'salary-range', 'offer-wait', 'written-review', 'onboarding-rude'], endingId: 'ending-onboarding-mismatch' },
+    { name: '拒绝团建', choices: ['resume-specific', 'interview-specific', 'followup-know-metric', 'salary-range', 'offer-wait', 'written-review', 'onboarding-ask', 'team-decline'], endingId: 'ending-teamfit' },
+    { name: '早会只说空话', choices: ['resume-specific', 'interview-specific', 'followup-know-metric', 'salary-range', 'offer-wait', 'written-review', 'onboarding-ask', 'team-attend', 'standup-vague'], endingId: 'ending-standup-vague' },
+    { name: '紧急任务过度承诺', choices: ['resume-specific', 'interview-specific', 'followup-know-metric', 'salary-range', 'offer-wait', 'written-review', 'onboarding-ask', 'team-attend', 'standup-report', 'urgent-promise'], endingId: 'ending-overtime' },
+    { name: '线上事故无证据甩锅', choices: ['resume-specific', 'interview-specific', 'followup-know-metric', 'salary-range', 'offer-wait', 'written-review', 'onboarding-ask', 'team-attend', 'standup-report', 'urgent-scope', 'incident-blame'], endingId: 'ending-scapegoat' },
+    { name: '复盘只做自我检讨', choices: ['resume-specific', 'interview-specific', 'followup-know-metric', 'salary-range', 'offer-wait', 'written-review', 'onboarding-ask', 'team-attend', 'standup-report', 'urgent-scope', 'incident-facts', 'retro-self-blame'], endingId: 'ending-self-blame' },
+  ];
+
+  it.each(failPaths)('$name 会立即进入独立结局', ({ choices, endingId }) => {
+    const state = play(choices);
+    expect(getCurrentEvent(events, state).id).toBe(endingId);
+    expect(getCurrentEvent(events, state).ending?.outcome).toBe('lost');
+    expect(state.status).toBe('lost');
   });
 
-  it('allows a player who documents the risk to reach a survival ending', () => {
-    const state = playToSurvivalEnding();
-    const ending = getCurrentEvent(events, state);
-    expect(ending.id).toBe('ending-survivor');
+  it('allows a careful route to reach a non-perfect but survivable ending', () => {
+    const state = play([
+      'resume-specific', 'interview-specific', 'followup-no-data', 'salary-range',
+      'offer-wait', 'written-review', 'onboarding-ask', 'team-attend', 'standup-report',
+      'urgent-scope', 'incident-facts', 'retro-action',
+    ]);
+    expect(getCurrentEvent(events, state).id).toBe('ending-survivor');
     expect(state.status).toBe('won');
-    expect(state.flags).toContain('kept_evidence');
-    expect(state.decisions).toHaveLength(9);
+    expect(state.decisions).toHaveLength(12);
   });
 
-  it('lets performative busyness reach a satirical promotion ending', () => {
-    let state = startGame();
-    state = pick(state, 'resume-polish');
-    state = pick(state, 'interview-praise');
-    state = pick(state, 'offer-sign');
-    state = pick(state, 'name-pick');
-    state = pick(state, 'team-praise');
-    state = pick(state, 'probation-promise');
-    state = pick(state, 'urgent-report');
-    state = pick(state, 'outage-busy');
-    state = pick(state, 'retro-busy');
-
-    expect(getCurrentEvent(events, state).id).toBe('ending-promoted');
-    expect(state.status).toBe('won');
-    expect(state.flags).toContain('performed_busy');
-  });
-
-  it('does not allow a conditional choice when its clue flag is absent', () => {
-    const state = startGame();
-    const event = events.find((candidate) => candidate.id === 'outage-008');
-    expect(event).toBeDefined();
-    expect(() => chooseOption(events, { ...state, currentEventId: 'outage-008' }, 'outage-evidence')).toThrow(/not available/);
-  });
-
-  it('rejects choices after the run has ended', () => {
-    const state = playToSurvivalEnding();
+  it('does not allow choices after a run has ended', () => {
+    const state = play(['resume-bluff']);
     expect(() => chooseOption(events, state, 'anything')).toThrow(/already ended/);
   });
 
-  it('restart clears prior decisions and flags', () => {
-    const previous = playToSurvivalEnding();
+  it('restart clears previous decisions and flags', () => {
+    const previous = play(['resume-specific', 'interview-specific']);
     expect(previous.decisions.length).toBeGreaterThan(0);
     const restarted = startGame(START_EVENT_ID);
     expect(restarted.decisions).toEqual([]);

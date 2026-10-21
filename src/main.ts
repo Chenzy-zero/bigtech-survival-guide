@@ -37,7 +37,7 @@ function renderHome(): void {
         <button class="primary-button start-button" id="start-game">开始试用期 <span aria-hidden="true">↗</span></button>
       </section>
       <div class="principle-grid" aria-label="游戏特点">
-        <div class="principle"><span class="principle-number">01</span><strong>常识不保命</strong><p>你以为的正确答案，可能只是下一道题的题干。</p></div>
+        <div class="principle"><span class="principle-number">01</span><strong>常识不保命</strong><p>一个回答不对，下一秒就可能收到未通过通知。</p></div>
         <div class="principle"><span class="principle-number">02</span><strong>态度很重要</strong><p>尤其是当结果不太重要的时候。</p></div>
         <div class="principle"><span class="principle-number">03</span><strong>活着就算赢</strong><p>至于项目有没有做好，那是另一个 KPI。</p></div>
       </div>
@@ -60,9 +60,6 @@ function renderGame(): void {
   const previousFeedback = state.lastFeedback
     ? `<aside class="feedback-card"><span class="feedback-label">上一选择的后果</span><p>${escapeHtml(state.lastFeedback)}</p></aside>`
     : '';
-  const clue = event.clue
-    ? `<aside class="clue-card"><span class="clue-icon">线索</span><p>${escapeHtml(event.clue)}</p></aside>`
-    : '';
 
   app!.innerHTML = `
     <main class="page-shell game-shell">
@@ -73,7 +70,6 @@ function renderGame(): void {
         <div class="scenario-meta"><span class="chapter-pill">${escapeHtml(event.chapter)}</span><span class="case-id">CASE ${String(decisionCount + 1).padStart(2, '0')}</span></div>
         <h1>${escapeHtml(event.title)}</h1>
         <p class="scenario-body">${escapeHtml(event.body)}</p>
-        ${clue}
       </section>
       <section class="choice-section" aria-labelledby="choice-heading">
         <div class="section-heading"><h2 id="choice-heading">你打算怎么做？</h2><span>请选择一个</span></div>
