@@ -23,9 +23,15 @@ npm run build
 npm run preview
 ```
 
+## 在线试玩
+
+目前 GitHub Pages 尚未启用，因此**暂时没有已验证的在线试玩地址**。部署步骤、仓库计划要求、网站公开可见性说明和回退方案见 [在线预览与静态部署](docs/deployment.md)。
+
+仓库保持私有；如果选择 GitHub Pages 或其他托管服务，发布出来的网站仍可能是公开可访问的。请先确认网站公开发布符合你的预期，再按部署文档启用工作流。
+
 ## 当前原型
 
-- 手机竖屏优先，打开页面即可开始。
+- 中文手机竖屏优先，打开页面即可开始。
 - 每次展示一个职场事件与 2–4 个选择。
 - 选择会推进剧情、留下标记、触发反转或结束游戏。
 - 包含存活结局、被优化结局、过劳警示结局和荒诞晋升结局。
@@ -40,6 +46,7 @@ npm run preview
 - [产品需求](docs/product-requirements.md)
 - [游戏设计](docs/game-design.md)
 - [技术方案](docs/technical-design.md)
+- [在线预览与静态部署](docs/deployment.md)
 - [Issue 管理规则](docs/project-management.md)
 - [研究资料与真实案例来源](docs/research/sources.md)
 - [AI 开发约定](AGENTS.md)
