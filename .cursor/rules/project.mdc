@@ -1,0 +1,8 @@
+---
+description: Project-wide rules for BigTech Survival Guide
+alwaysApply: true
+---
+
+Read AGENTS.md first, then read the relevant docs before changing behavior.
+
+This is a lightweight, mobile-first, single-page choice game. Keep the MVP small; do not add a backend, login, database, multiplayer features, or a heavy UI framework without explicit approval. Keep story content data-driven, make every transition target valid, and document the sources and evidence level behind real-world-inspired scenarios. Run relevant checks and report what was actually verified.
