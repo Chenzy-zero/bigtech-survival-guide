@@ -66,9 +66,6 @@ button:focus-visible { outline: 3px solid #315e9b; outline-offset: 3px; }
 .case-id { white-space: nowrap; }
 .scenario-card h1 { margin: 24px 0 13px; font-size: clamp(24px, 6.6vw, 33px); line-height: 1.35; letter-spacing: -.055em; font-weight: 900; }
 .scenario-body { margin: 0; color: #4f504a; font-size: 14px; line-height: 1.95; white-space: pre-line; }
-.clue-card { display: flex; align-items: flex-start; gap: 10px; margin-top: 20px; padding: 12px; border-radius: 7px; background: #f4f1e9; }
-.clue-icon { flex: 0 0 auto; padding: 3px 5px; border: 1px solid #d4c7ac; border-radius: 3px; color: #7a6540; font-size: 9px; font-weight: 800; }
-.clue-card p { margin: 0; color: #777166; font-size: 11px; line-height: 1.8; }
 .choice-section { margin-top: 24px; }
 .section-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
 .section-heading h2 { margin: 0; font-size: 15px; font-weight: 900; letter-spacing: -.025em; }
