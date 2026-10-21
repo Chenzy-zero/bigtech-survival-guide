@@ -36,7 +36,7 @@ describe('event data validation', () => {
     expect(scenes.length).toBeGreaterThanOrEqual(10);
     expect(scenes.every((event) => event.body.length <= 100)).toBe(true);
     expect(scenes.every((event) => !('clue' in event))).toBe(true);
-    expect(events.some((event) => [event.title, event.body, ...(event.choices ?? []).map((choice) => choice.text)].some((text) => text.includes('主人翁精神'))).toBe(false);
+    expect(events.some((event) => [event.title, event.body, ...(event.choices ?? []).map((choice) => choice.text)].some((text) => text.includes('主人翁精神')))).toBe(false);
   });
 });
 
