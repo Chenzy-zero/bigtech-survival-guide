@@ -73,3 +73,24 @@ test('player can start, choose, reach an ending, and restart with accessible pro
   await expect(page.getByRole('heading', { name: '简历投出去前十分钟' })).toBeFocused();
   await expect(page.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '1');
 });
+
+test('ironic survival path: flattery, visible paperwork, strategic coffee break', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('./');
+  await page.getByRole('button', { name: /开始试用期/ }).click();
+
+  const path = [
+    'resume-specific', 'interview-specific', 'followup-know-metric',
+    'salary-range', 'offer-wait', 'written-review',
+    'onboarding-ask', 'team-attend', 'standup-praise',
+    'praise-roadmap', 'busy-pace', 'showcase-boundary',
+  ];
+  for (const choiceId of path) {
+    await page.locator(`[data-choice-id="${choiceId}"]`).click();
+  }
+
+  const ending = page.getByRole('heading', { name: '你没修 Bug，却被夸成了项目推进能手' });
+  await expect(ending).toBeFocused();
+  await expect(page.locator('.review-item')).toHaveCount(12);
+  await expect(page.getByText(/以后专职负责每周汇报/)).toBeVisible();
+});
