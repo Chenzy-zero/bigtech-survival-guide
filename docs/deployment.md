@@ -19,7 +19,7 @@ GitHub Pages 对私有仓库的支持取决于 GitHub 计划。即使源码仓�
 5. 推送到 `main` 后工作流会自动测试、构建并发布；也可以在 **Actions → Deploy game preview → Run workflow** 手动运行。
 6. 在 Actions 的成功部署记录中打开 `github-pages` environment 的站点 URL。项目站点的预期地址通常是 `https://Chenzy-zero.github.io/bigtech-survival-guide/`，但只有成功部署后才算生效。
 
-工作流不需要额外的 API Token 或第三方部署密钥。它会先运行测试，再构建和发布 `dist`，并使用最小化的 Pages 部署权限。
+工作流不需要额外的 API Token 或第三方部署密钥。它会先运行测试，再构建和发布 `dist`，并使用最小化的 Pages 部署权限。Pages 构建通过 Vite 的 `--base=/bigtech-survival-guide/` 参数设置项目子路径；本地开发和普通预览继续使用根路径。
 
 ## 如果当前计划不支持私有仓库 Pages
 
@@ -41,5 +41,3 @@ npm test
 npm run build
 npm run preview
 ```
-
-GitHub Pages 的构建使用 `DEPLOY_TARGET=github-pages` 设置项目子路径；本地开发和普通预览默认使用根路径。

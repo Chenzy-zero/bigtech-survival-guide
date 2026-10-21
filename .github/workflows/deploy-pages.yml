@@ -44,9 +44,7 @@ jobs:
         uses: actions/configure-pages@v5
 
       - name: Build for GitHub Pages
-        run: npm run build
-        env:
-          DEPLOY_TARGET: github-pages
+        run: npm run build -- --base=/bigtech-survival-guide/
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v4
