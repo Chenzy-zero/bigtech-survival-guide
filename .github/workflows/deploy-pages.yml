@@ -5,8 +5,8 @@ on:
     branches: [main]
   workflow_dispatch:
 
-# Deployment is deliberately opt-in. The repository is private, and publishing
-# a Pages site may make the built game publicly accessible even when source stays private.
+# The repository owner explicitly approved public source and public website.
+# Pages still must be enabled once in Settings -> Pages before this workflow can deploy.
 permissions:
   contents: read
 
@@ -16,7 +16,6 @@ concurrency:
 
 jobs:
   deploy:
-    if: ${{ vars.ENABLE_GITHUB_PAGES == 'true' }}
     runs-on: ubuntu-latest
     permissions:
       contents: read

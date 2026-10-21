@@ -92,6 +92,6 @@
 
 - 使用 Vite 构建静态资源，不需要服务端或数据库。
 - 本地开发和预览使用根路径；GitHub Pages 项目站点构建通过 `--base=/bigtech-survival-guide/` 设置子路径。
-- 部署工作流默认关闭；只有仓库变量 `ENABLE_GITHUB_PAGES=true` 时才运行，避免意外公开发布。
-- 从私有仓库发布 Pages 取决于 GitHub 计划；私有源码不代表发布的网站也私有。
-- 首次启用前确认网站访问可见性，并按照 [docs/deployment.md](deployment.md) 操作。
+- 仓库所有者已授权公开源码与公开网站；首次部署前需要在 Settings → Pages 将 Source 设为 GitHub Actions。
+- 首次配置完成后，部署工作流会在 push 到 main 时自动测试、构建和发布。
+- 首次启用与故障排查见 [docs/deployment.md](deployment.md)。

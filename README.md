@@ -25,9 +25,9 @@ npm run preview
 
 ## 在线试玩
 
-目前 GitHub Pages 尚未启用，因此**暂时没有已验证的在线试玩地址**。部署步骤、仓库计划要求、网站公开可见性说明和回退方案见 [在线预览与静态部署](docs/deployment.md)。
+仓库已公开，游戏网站也获准公开发布。首次启用 GitHub Pages 前，需要在仓库 **Settings → Pages → Build and deployment → Source** 中选择 **GitHub Actions**。
 
-仓库保持私有；如果选择 GitHub Pages 或其他托管服务，发布出来的网站仍可能是公开可访问的。请先确认网站公开发布符合你的预期，再按部署文档启用工作流。
+**只有部署工作流成功、并且真实访问验证通过后，才会把试玩链接标记为可用。** 部署步骤与故障排查见 [在线预览与静态部署](docs/deployment.md)。
 
 ## 当前原型
 
