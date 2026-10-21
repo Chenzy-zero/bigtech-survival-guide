@@ -19,13 +19,17 @@ npm install
 npm run dev
 ```
 
-运行测试和生产构建：
+运行单元测试、生产构建和 Chromium 浏览器测试（首次运行需安装 Chromium）：
 
 ```bash
 npm test
 npm run build
+npx playwright install chromium
+npm run test:e2e
 npm run preview
 ```
+
+浏览器测试覆盖 320、375、390、430 CSS 像素宽度、关键游戏流程、焦点迁移、进度条语义和选项触控高度。GitHub Actions 还会在 Pages 部署成功后，对线上试玩地址执行浏览器烟雾测试。自动化检查不替代真实手机和屏幕阅读器的人工验收。
 
 ## 当前原型
 

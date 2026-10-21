@@ -1,0 +1,59 @@
+name: Browser smoke test
+
+on:
+  workflow_run:
+    workflows: ["Deploy game preview"]
+    types: [completed]
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out deployed commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+      - name: Install Chromium for Playwright
+        run: npx playwright install --with-deps chromium
+      - name: Wait for the deployed build to be available
+        shell: bash
+        run: |
+          set -euo pipefail
+          pages_url="https://chenzy-zero.github.io/bigtech-survival-guide/"
+          for attempt in $(seq 1 18); do
+            html="$(curl -fsSL "$pages_url" || true)"
+            asset="$(printf '%s' "$html" | grep -oE '/bigtech-survival-guide/assets/[^"]+\.js' | head -n 1 || true)"
+            if [ -n "$asset" ] && curl -fsSL "https://chenzy-zero.github.io$asset" | grep -q 'aria-valuenow'; then
+              echo "Current accessible build is available."
+              exit 0
+            fi
+            echo "Waiting for the deployed asset update ($attempt/18)."
+            sleep 10
+          done
+          echo "Timed out waiting for the current Pages build." >&2
+          exit 1
+      - name: Test the live GitHub Pages site
+        run: npm run test:e2e
+        env:
+          PLAYWRIGHT_BASE_URL: https://chenzy-zero.github.io/bigtech-survival-guide/
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: live-playwright-report
+          path: |
+            playwright-report/
+            test-results/
+          if-no-files-found: ignore
+          retention-days: 7

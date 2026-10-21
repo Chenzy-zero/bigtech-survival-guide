@@ -95,3 +95,13 @@
 - 仓库所有者已授权公开源码与公开网站；首次部署前需要在 Settings → Pages 将 Source 设为 GitHub Actions。
 - 首次配置完成后，部署工作流会在 push 到 main 时自动测试、构建和发布。
 - 首次启用与故障排查见 [docs/deployment.md](deployment.md)。
+
+
+## 8. 浏览器与移动端自动化验收
+
+- Playwright + Chromium 对生产预览执行关键流程测试：开始游戏、选择、进入结局、重新开始。
+- 在 320、375、390、430 CSS 像素宽度下检查首页、场景页、结局页的横向溢出。
+- 检查选择按钮至少 44 CSS 像素高，并验证场景/结局焦点迁移与进度条 ARIA 数值。
+- PR 验证工作流先运行单元测试和生产构建，再运行本地生产预览 E2E；失败时上传 Playwright 报告、截图和 trace。
+- Pages 部署工作流成功后，单独的 browser-smoke 工作流会针对公开试玩 URL 执行相同测试，并等待部署后的带有新 ARIA 标记的脚本资源可用。
+- 自动化结果证明的是 Chromium 视口和交互行为；不代表已经完成真实设备触摸、Safari/WebKit、真实屏幕阅读器或视觉审查。

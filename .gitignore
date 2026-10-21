@@ -12,3 +12,7 @@ coverage/
 .DS_Store
 .idea/
 .vscode/
+
+# Browser test artifacts
+playwright-report/
+test-results/
