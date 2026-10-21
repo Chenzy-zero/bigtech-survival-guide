@@ -1,0 +1,40 @@
+name: Development task
+description: 创建开发、研究、内容或维护任务
+title: "[Task]: "
+body:
+  - type: textarea
+    id: context
+    attributes:
+      label: 背景
+      description: 为什么需要完成这项任务？
+    validations:
+      required: true
+  - type: textarea
+    id: paths
+    attributes:
+      label: 对应的仓库文档/代码路径
+      description: 必须引用真实存在的路径；若需新增文件，请同时引用现有设计文档。
+      placeholder: "docs/technical-design.md；src/engine/game.ts（计划新增）"
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: 工作范围
+      description: 说明本次需要做什么，以及明确不做什么。
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: 验收标准
+      description: 列出可验证的完成条件。
+    validations:
+      required: true
+  - type: textarea
+    id: validation
+    attributes:
+      label: 验证方式
+      description: 应运行哪些测试、构建或人工检查？
+    validations:
+      required: true

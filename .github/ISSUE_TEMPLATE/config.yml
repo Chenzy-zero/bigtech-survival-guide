@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Project documentation
+    url: https://github.com/Chenzy-zero/bigtech-survival-guide#文档导航
+    about: 提交 Issue 前请先阅读项目文档；所有需求、任务和 Bug 都通过 Issue 管理。
