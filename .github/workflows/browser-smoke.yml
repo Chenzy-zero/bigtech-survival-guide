@@ -34,7 +34,7 @@ jobs:
           for attempt in $(seq 1 18); do
             html="$(curl -fsSL "$pages_url" || true)"
             asset="$(printf '%s' "$html" | grep -oE '/bigtech-survival-guide/assets/[^"]+\.js' | head -n 1 || true)"
-            if [ -n "$asset" ] && curl -fsSL "https://chenzy-zero.github.io$asset" | grep -q 'aria-valuenow'; then
+            if [ -n "$asset" ] && curl -fsSL "https://chenzy-zero.github.io$asset" | grep 'aria-valuenow' >/dev/null; then
               echo "Current accessible build is available."
               exit 0
             fi
