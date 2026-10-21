@@ -105,3 +105,10 @@
 - PR 验证工作流先运行单元测试和生产构建，再运行本地生产预览 E2E；失败时上传 Playwright 报告、截图和 trace。
 - Pages 部署工作流成功后，单独的 browser-smoke 工作流会针对公开试玩 URL 执行相同测试，并等待部署后的带有新 ARIA 标记的脚本资源可用。
 - 自动化结果证明的是 Chromium 视口和交互行为；不代表已经完成真实设备触摸、Safari/WebKit、真实屏幕阅读器或视觉审查。
+
+## 9. 剧情分支旗标约定
+
+- 不新增角色数值系统；复用 `GameChoice.setFlags` 与 `GameChoice.requiresFlags` 表示已发生的行为及其后果。
+- 早会另类路径在进入 `showcase-015` 前依次设置 `manager_pleased`、`scope_marked`、`strategic_slack`；现场说明真实进展的选择需要具备这些前置标记。
+- 结局必须独立命名、解释当下失败或临时存活原因，测试覆盖旗标缺失与重开清空。
+- 与现有 12 步进度长度保持一致，不增加状态仪表盘。
